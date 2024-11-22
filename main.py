@@ -11,7 +11,7 @@ started November 21st, 2024
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
-from pygame_gui.elements import UIButton
+from pygame_gui.elements import UIButton, UILabel
 
 class Device(object):
     '''
@@ -86,6 +86,21 @@ class DashDemo(object):
             text='Turn Off All Devices',
             manager=self.manager,
             object_id = ObjectID(class_id='@turnoffall_button')
+        )
+
+        self.elems["masterswitch"] = UILabel(
+            relative_rect=pygame.Rect((50, 350), (100, 50)),
+            text='Master Switch'
+        )
+
+        self.elems["quickaccess"] = UILabel(
+            relative_rect=pygame.Rect((150, 10), (100, 50)),
+            text='Quick Access'
+        )
+
+        self.elems["welcome"] = UILabel(
+            relative_rect=pygame.Rect((50, 200), (100, 50)),
+            text='Welcome'
         )
 
         self.mainLoop()

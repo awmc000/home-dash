@@ -1,4 +1,11 @@
 {
+    "defaults":
+    {
+        "colours":
+        {
+            "normal_text": "Black"
+        }
+    },
     "@turnoffall_button":
     {
         "colours":
