@@ -8,12 +8,14 @@ for CSCI 310 at VIU
 
 started November 21st, 2024
 '''
+# Outside libraries
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
 from pygame_gui.elements import UIButton, UILabel
 
-from time import strftime, gmtime
+# Modules in this project
+from screen import *
 
 class Device(object):
     '''
@@ -62,85 +64,13 @@ class House(object):
     '''
     def __init__(self):
         self.floors = [Floor('Ground Floor')]
-
-class Screen(object):
-    '''
-    Creates UI elements, which will be discarded when the GC
-    discards this object.
-    '''
-    def __init__(self, manager):
-        self.manager = manager
-        self.elems = {}
-        self.createCommonElements()
-        self.create()
     
-    def createCommonElements(self):
-        self.elems["clock"] = UILabel(
-            relative_rect=pygame.Rect((0, 0), (100, 50)),
-            text=strftime('%H:%M', gmtime())
-        )
-        self.elems["battery"] = UILabel(
-            relative_rect=pygame.Rect((250, 0), (30, 50)),
-            text='98%'
-        )
-        self.elems["home"] = UIButton(
-            relative_rect=pygame.Rect((5, 500), (75, 50)),
-            text='Home',
-            manager=self.manager,
-            object_id = ObjectID(class_id='@navbar_button')
-        )
-        self.elems["rooms"] = UIButton(
-            relative_rect=pygame.Rect((80, 500), (75, 50)),
-            text='Rooms',
-            manager=self.manager,
-            object_id = ObjectID(class_id='@navbar_button')
-        )
-        self.elems["activity"] = UIButton(
-            relative_rect=pygame.Rect((155, 500), (75, 50)),
-            text='Activity',
-            manager=self.manager,
-            object_id = ObjectID(class_id='@navbar_button')
-        )
-        self.elems["addnew"] = UIButton(
-            relative_rect=pygame.Rect((230, 500), (75, 50)),
-            text='Add New',
-            manager=self.manager,
-            object_id = ObjectID(class_id='@navbar_button')
-        )
+    def turn_off_all(self):
+        for floor in self.floors:
+            for room in floor.rooms:
+                for device in room.devices:
+                    device.on = False
 
-    def create(self):
-        raise NotImplementedError('Screen is an abstract class!')
-
-class HomeScreen(Screen):
-    def create(self):
-        self.elems["turnoffall"] = UIButton(
-            relative_rect=pygame.Rect((100, 400), (200, 50)),
-            text='Turn Off All Devices',
-            manager=self.manager,
-            object_id = ObjectID(class_id='@turnoffall_button')
-        )
-
-        self.elems["masterswitch"] = UILabel(
-            relative_rect=pygame.Rect((50, 350), (100, 50)),
-            text='Master Switch'
-        )
-
-        self.elems["quickaccess"] = UILabel(
-            relative_rect=pygame.Rect((150, 10), (100, 50)),
-            text='Quick Access'
-        )
-
-        self.elems["welcome"] = UILabel(
-            relative_rect=pygame.Rect((50, 200), (100, 50)),
-            text='Welcome'
-        )
-
-class AddNewScreen(Screen):
-    def create(self):
-        self.elems["masterswitch"] = UILabel(
-            relative_rect=pygame.Rect((50, 350), (100, 50)),
-            text='Add New'
-        )
 
 class DashDemo(object):
     '''
@@ -160,6 +90,7 @@ class DashDemo(object):
 
     def __init__(self):
         self.state = self.states['home']
+        self.house = House()
 
         pygame.init()
         self.surf = pygame.display.set_mode(self.screenDimensions)
@@ -175,6 +106,24 @@ class DashDemo(object):
 
         self.mainLoop()
     
+    def handle_common_elements(self, event):
+        if event.ui_element == self.screen.elems['home']:
+            self.state = self.states['home']
+            self.manager.clear_and_reset()
+            self.screen = HomeScreen(self.manager)
+        elif event.ui_element == self.screen.elems['rooms']:
+            self.state = self.states['viewfloor']
+            self.manager.clear_and_reset()
+            self.screen = RoomsScreen(self.manager)
+        elif event.ui_element == self.screen.elems['activity']:
+            self.state = self.states['viewfloor']
+            self.manager.clear_and_reset()
+            self.screen = ActivityScreen(self.manager)
+        elif event.ui_element == self.screen.elems['addnew']:
+            self.state = self.states['addnew']
+            self.manager.clear_and_reset()
+            self.screen = AddNewScreen(self.manager)
+
     def mainLoop(self):
         while self.running:
             
@@ -184,14 +133,9 @@ class DashDemo(object):
                 if event.type == pygame.QUIT:
                     self.running = False
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if isinstance(self.screen, HomeScreen):
-                        self.manager.clear_and_reset()
-                        self.screen = AddNewScreen(self.manager)
-                    else:
-                        self.manager.clear_and_reset()
-                        self.screen = HomeScreen(self.manager)
-
+                if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                    # Common elements first, then state-specific
+                    self.handle_common_elements(event)
                 self.manager.process_events(event)
 
             self.manager.update(self.td)

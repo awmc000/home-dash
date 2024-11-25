@@ -20,5 +20,20 @@
             "shape_corner_radius": "10",
             "border_width": "2"
         }
+    },
+    "@navbar_button":
+    {
+        "colours":
+        {
+            "normal_border": "Black",
+            "normal_bg": "Blue",
+            "normal_text": "White"
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "10",
+            "border_width": "2"
+        }
     }
 }
