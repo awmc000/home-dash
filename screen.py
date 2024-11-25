@@ -84,12 +84,6 @@ class HomeScreen(Screen):
             text='Welcome'
         )
 
-        self.elems["turnoffall"] = UIButton(
-            relative_rect=pygame.Rect((50, 60), (200, 50)),
-            text='Turn Off All Devices',
-            manager=self.manager,
-            object_id = ObjectID(class_id='@turnoffall_button')
-        )
 
         # Quick access section
         self.elems["quickaccess"] = UILabel(

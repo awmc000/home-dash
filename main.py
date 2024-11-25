@@ -24,7 +24,7 @@ class Device(object):
     def __init__(self, name, icon):
         self.name = name
         self.on = True
-        self.icon = '' # TODO: Path to an icon.
+        self.icon = icon # TODO: Path to an icon.
 
 # class Camera(Device):
 #     '''
@@ -64,12 +64,16 @@ class House(object):
     '''
     def __init__(self):
         self.floors = [Floor('Ground Floor')]
+        
+        # Append a test device
+        self.floors[0].rooms[0].devices.append(Device('TestDevice', ''))
     
     def turn_off_all(self):
         for floor in self.floors:
             for room in floor.rooms:
                 for device in room.devices:
                     device.on = False
+                    print(f'Turned off {device.name} in {room.name}')
 
 
 class DashDemo(object):
@@ -116,7 +120,7 @@ class DashDemo(object):
             self.manager.clear_and_reset()
             self.screen = RoomsScreen(self.manager)
         elif event.ui_element == self.screen.elems['activity']:
-            self.state = self.states['viewfloor']
+            self.state = self.states['activity']
             self.manager.clear_and_reset()
             self.screen = ActivityScreen(self.manager)
         elif event.ui_element == self.screen.elems['addnew']:
@@ -136,6 +140,15 @@ class DashDemo(object):
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
                     # Common elements first, then state-specific
                     self.handle_common_elements(event)
+                    
+                    if self.state == self.states['home']:
+                        if event.ui_element == self.screen.elems['turnoffall']:
+                            self.house.turn_off_all()
+                        elif event.ui_element == self.screen.elems['viewall']:
+                            self.state = self.states['activity']
+                            self.manager.clear_and_reset()
+                            self.screen = ActivityScreen(self.manager)
+
                 self.manager.process_events(event)
 
             self.manager.update(self.td)
