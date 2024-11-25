@@ -6,6 +6,22 @@
             "normal_text": "Black"
         }
     },
+    "button":
+    {
+        "font":
+        {
+            "name": "sanfrancisco",
+            "size": "16",
+            "regular_path": "assets/SF-Pro-Display-Regular.otf"
+        }
+    },
+    "label":
+    {
+        "font": {
+            "name": "sanfrancisco",
+            "size": "16"
+        }
+    },
     "@turnoffall_button":
     {
         "colours":
@@ -26,8 +42,23 @@
         "colours":
         {
             "normal_border": "Black",
-            "normal_bg": "Blue",
-            "normal_text": "White"
+            "normal_bg": "White",
+            "normal_text": "Black"
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "10",
+            "border_width": "2"
+        }
+    },
+    "@quick":
+    {
+        "colours":
+        {
+            "normal_border": "Black",
+            "normal_bg": "White",
+            "normal_text": "Black"
         },
         "misc":
         {
