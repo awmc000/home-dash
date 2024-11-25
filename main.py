@@ -13,6 +13,8 @@ import pygame_gui
 from pygame_gui.core import ObjectID
 from pygame_gui.elements import UIButton, UILabel
 
+from time import strftime, gmtime
+
 class Device(object):
     '''
     Stores device name, icon & on/off state.    
@@ -30,15 +32,6 @@ class Device(object):
 #         super()
 #         self.feed = '' # TODO: path to image representing camera feed.
 
-class Floor(object):
-    '''
-    Stores a number of rooms and their positions relative to eachother.
-    Can be rendered to screen.
-    '''
-    def __init__(self, name):
-        self.name = name
-        self.rooms = []
-
 class Room(object):
     '''
     Stores a width and height in pixels.
@@ -51,36 +44,75 @@ class Room(object):
         self.devices = []
 
 
-class DashDemo(object):
+class Floor(object):
     '''
-    Frontend and stores rooms.
+    Stores a number of rooms and their positions relative to eachother.
+    Contains a single untitled room by default.
+    Can be rendered to screen.
     '''
+    def __init__(self, name):
+        self.name = name
+        self.rooms = [Room('Untitled Room')]
+        self.adjacency = [[]]
 
-    states = {
-        "home":         0,
-        "addnew":       1,
-        "adddevice":    2,
-        "addroom":      3,
-        "viewfloor":    4,
-        "viewdevice":   5,
-        "activity":     6
-    }
-    screenDimensions = (400, 600)
-
+class House(object):
+    '''
+    Stores a collection of named floors.
+    By default, a house has one floor and one room.
+    '''
     def __init__(self):
-        self.state = self.states['home']
+        self.floors = [Floor('Ground Floor')]
+
+class Screen(object):
+    '''
+    Creates UI elements, which will be discarded when the GC
+    discards this object.
+    '''
+    def __init__(self, manager):
+        self.manager = manager
         self.elems = {}
+        self.createCommonElements()
+        self.create()
+    
+    def createCommonElements(self):
+        self.elems["clock"] = UILabel(
+            relative_rect=pygame.Rect((0, 0), (100, 50)),
+            text=strftime('%H:%M', gmtime())
+        )
+        self.elems["battery"] = UILabel(
+            relative_rect=pygame.Rect((250, 0), (30, 50)),
+            text='98%'
+        )
+        self.elems["home"] = UIButton(
+            relative_rect=pygame.Rect((5, 500), (75, 50)),
+            text='Home',
+            manager=self.manager,
+            object_id = ObjectID(class_id='@navbar_button')
+        )
+        self.elems["rooms"] = UIButton(
+            relative_rect=pygame.Rect((80, 500), (75, 50)),
+            text='Rooms',
+            manager=self.manager,
+            object_id = ObjectID(class_id='@navbar_button')
+        )
+        self.elems["activity"] = UIButton(
+            relative_rect=pygame.Rect((155, 500), (75, 50)),
+            text='Activity',
+            manager=self.manager,
+            object_id = ObjectID(class_id='@navbar_button')
+        )
+        self.elems["addnew"] = UIButton(
+            relative_rect=pygame.Rect((230, 500), (75, 50)),
+            text='Add New',
+            manager=self.manager,
+            object_id = ObjectID(class_id='@navbar_button')
+        )
 
-        pygame.init()
-        self.surf = pygame.display.set_mode(self.screenDimensions)
-        self.bg = pygame.Surface(self.screenDimensions)
-        self.bg.fill(pygame.Color('#FFFFFF'))
-        self.clock = pygame.time.Clock()
-        self.running = True
+    def create(self):
+        raise NotImplementedError('Screen is an abstract class!')
 
-        self.manager = pygame_gui.UIManager(self.screenDimensions,
-            theme_path="home-dash.json")
-
+class HomeScreen(Screen):
+    def create(self):
         self.elems["turnoffall"] = UIButton(
             relative_rect=pygame.Rect((100, 400), (200, 50)),
             text='Turn Off All Devices',
@@ -103,6 +135,44 @@ class DashDemo(object):
             text='Welcome'
         )
 
+class AddNewScreen(Screen):
+    def create(self):
+        self.elems["masterswitch"] = UILabel(
+            relative_rect=pygame.Rect((50, 350), (100, 50)),
+            text='Add New'
+        )
+
+class DashDemo(object):
+    '''
+    Frontend and stores rooms.
+    '''
+
+    states = {
+        "home":         0,
+        "addnew":       1,
+        "adddevice":    2,
+        "addroom":      3,
+        "viewfloor":    4,
+        "viewdevice":   5,
+        "activity":     6
+    }
+    screenDimensions = (300, 600)
+
+    def __init__(self):
+        self.state = self.states['home']
+
+        pygame.init()
+        self.surf = pygame.display.set_mode(self.screenDimensions)
+        self.bg = pygame.Surface(self.screenDimensions)
+        self.bg.fill(pygame.Color('#FFFFFF'))
+        self.clock = pygame.time.Clock()
+        self.running = True
+
+        self.manager = pygame_gui.UIManager(self.screenDimensions,
+            theme_path="home-dash.json")
+
+        self.screen = HomeScreen(self.manager)
+
         self.mainLoop()
     
     def mainLoop(self):
@@ -113,6 +183,14 @@ class DashDemo(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if isinstance(self.screen, HomeScreen):
+                        self.manager.clear_and_reset()
+                        self.screen = AddNewScreen(self.manager)
+                    else:
+                        self.manager.clear_and_reset()
+                        self.screen = HomeScreen(self.manager)
 
                 self.manager.process_events(event)
 
