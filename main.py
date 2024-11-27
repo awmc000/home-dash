@@ -8,6 +8,9 @@ for CSCI 310 at VIU
 
 started November 21st, 2024
 '''
+# Built-in libraries
+from datetime import datetime
+
 # Outside libraries
 import pygame
 import pygame_gui
@@ -65,15 +68,21 @@ class House(object):
     def __init__(self):
         self.floors = [Floor('Ground Floor')]
         
+        # Create activity log with startup event
+        self.log = [(datetime.now(), 'Application started')]
+
         # Append a test device
         self.floors[0].rooms[0].devices.append(Device('TestDevice', ''))
     
+    def log_event(self, desc: str):
+        self.log.append((datetime.now(), desc))
+
     def turn_off_all(self):
         for floor in self.floors:
             for room in floor.rooms:
                 for device in room.devices:
                     device.on = False
-                    print(f'Turned off {device.name} in {room.name}')
+                    self.log_event(f'Turned off {device.name} in {room.name}')
 
 
 class DashDemo(object):

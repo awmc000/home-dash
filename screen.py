@@ -17,7 +17,7 @@ Split off Nov 24
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
-from pygame_gui.elements import UIButton, UILabel
+from pygame_gui.elements import UIButton, UILabel, UIScrollingContainer
 
 from time import strftime, gmtime
 
@@ -84,7 +84,6 @@ class HomeScreen(Screen):
             text='Welcome'
         )
 
-
         # Quick access section
         self.elems["quickaccess"] = UILabel(
             relative_rect=pygame.Rect((20, 120), (100, 50)),
@@ -142,16 +141,45 @@ class HomeScreen(Screen):
 
 class AddNewScreen(Screen):
     def create(self):
-        self.elems["masterswitch"] = UILabel(
-            relative_rect=pygame.Rect((50, 350), (150, 50)),
-            text='TODO: Add New'
+        self.elems["activitylog"] = UILabel(
+            relative_rect=pygame.Rect((100, 20), (100, 50)),
+            text='Add New'
         )
-
+        self.elems["turnoffall"] = UIButton(
+            relative_rect=pygame.Rect((50, 200), (200, 80)),
+            text='New Room',
+            manager=self.manager,
+            object_id = ObjectID(class_id='@turnoffall_button')
+        )
+        self.elems["turnoffall"] = UIButton(
+            relative_rect=pygame.Rect((50, 400), (200, 80)),
+            text='New Device',
+            manager=self.manager,
+            object_id = ObjectID(class_id='@turnoffall_button')
+        )
 class ActivityScreen(Screen):
     def create(self):
-        self.elems["masterswitch"] = UILabel(
-            relative_rect=pygame.Rect((50, 350), (150, 50)),
-            text='TODO: Activity Log'
+        self.elems["activitylog"] = UILabel(
+            relative_rect=pygame.Rect((100, 20), (100, 50)),
+            text='Activity Log'
+        )
+
+        self.elems["log"] = UIScrollingContainer(
+            relative_rect=pygame.Rect((25, 100), (250, 400)),
+            manager=self.manager,
+            allow_scroll_x = False
+        )
+        self.elems["log"].set_scrollable_area_dimensions((200, 800))
+        
+        self.elems["logitemtest1"] = UIButton(
+            relative_rect=pygame.Rect((10, 20), (250, 30)),
+            text='Activity Log Item 1',
+            container = self.elems["log"]
+        )
+        self.elems["logitemtest2"] = UIButton(
+            relative_rect=pygame.Rect((10, 500), (250, 30)),
+            text='Activity Log Item 2',
+            container = self.elems["log"]
         )
 
 class RoomsScreen(Screen):
