@@ -52,13 +52,13 @@ class Room(object):
 class Floor(object):
     '''
     Stores a number of rooms and their positions relative to eachother.
-    Contains a single untitled room by default.
+    Contains two adjacent, untitled rooms by default.
     Can be rendered to screen.
     '''
     def __init__(self, name):
         self.name = name
-        self.rooms = [Room('Untitled Room')]
-        self.adjacency = [[]]
+        self.rooms = [Room('Untitled Room 0'), Room('Untitled Room 1')]
+        self.adjacency = [[1], [0]]
 
 class House(object):
     '''
@@ -95,7 +95,7 @@ class DashDemo(object):
         "addnew":       1,
         "adddevice":    2,
         "addroom":      3,
-        "viewfloor":    4,
+        "rooms":    4,
         "viewdevice":   5,
         "activity":     6
     }
@@ -125,13 +125,14 @@ class DashDemo(object):
             self.manager.clear_and_reset()
             self.screen = HomeScreen(self.manager)
         elif event.ui_element == self.screen.elems['rooms']:
-            self.state = self.states['viewfloor']
+            self.state = self.states['rooms']
             self.manager.clear_and_reset()
             self.screen = RoomsScreen(self.manager)
         elif event.ui_element == self.screen.elems['activity']:
             self.state = self.states['activity']
             self.manager.clear_and_reset()
             self.screen = ActivityScreen(self.manager)
+            self.screen.draw_logs(self.house.log)
         elif event.ui_element == self.screen.elems['addnew']:
             self.state = self.states['addnew']
             self.manager.clear_and_reset()
@@ -157,6 +158,7 @@ class DashDemo(object):
                             self.state = self.states['activity']
                             self.manager.clear_and_reset()
                             self.screen = ActivityScreen(self.manager)
+                            self.screen.draw_logs(self.house.log)
 
                 self.manager.process_events(event)
 

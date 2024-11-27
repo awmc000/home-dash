@@ -66,5 +66,68 @@
             "shape_corner_radius": "10",
             "border_width": "2"
         }
+    },
+    "@homebutton":
+    {
+        "colours":
+        {
+            "normal_border": "Black",
+            "normal_bg": "White",
+            "normal_text": "Black"
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "10",
+            "border_width": "2"
+        },
+        "images":
+        {
+            "normal_image": {
+                "path": "assets/home.png"
+            }
+        }
+    },
+    "@roomsbutton":
+    {
+        "colours":
+        {
+            "normal_border": "Black",
+            "normal_bg": "White",
+            "normal_text": "Black"
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "10",
+            "border_width": "2"
+        },
+        "images":
+        {
+            "normal_image": {
+                "path": "assets/door.png"
+            }
+        }
+    },
+    "@activitybutton":
+    {
+        "colours":
+        {
+            "normal_border": "Black",
+            "normal_bg": "White",
+            "normal_text": "Black"
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "10",
+            "border_width": "2"
+        },
+        "images":
+        {
+            "normal_image": {
+                "path": "assets/activity.png"
+            }
+        }
     }
 }

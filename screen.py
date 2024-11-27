@@ -51,19 +51,19 @@ class Screen(object):
             relative_rect=pygame.Rect((navbar_x + nav_spacing, navbar_y), (nav_button_width, nav_button_height)),
             text='Home',
             manager=self.manager,
-            object_id = ObjectID(class_id='@navbar_button')
+            object_id = ObjectID(class_id='@homebutton')
         )
         self.elems["rooms"] = UIButton(
             relative_rect=pygame.Rect((navbar_x + nav_spacing + 1 * (nav_button_width), navbar_y), (nav_button_width, nav_button_height)),
             text='Rooms',
             manager=self.manager,
-            object_id = ObjectID(class_id='@navbar_button')
+            object_id = ObjectID(class_id='@roomsbutton')
         )
         self.elems["activity"] = UIButton(
             relative_rect=pygame.Rect((navbar_x + nav_spacing + 2 * (nav_button_width), navbar_y), (nav_button_width, nav_button_height)),
             text='Activity',
             manager=self.manager,
-            object_id = ObjectID(class_id='@navbar_button')
+            object_id = ObjectID(class_id='@activitybutton')
         )
         self.elems["addnew"] = UIButton(
             relative_rect=pygame.Rect((navbar_x + nav_spacing + 3 * (nav_button_width), navbar_y), (nav_button_width, nav_button_height)),
@@ -171,16 +171,15 @@ class ActivityScreen(Screen):
         )
         self.elems["log"].set_scrollable_area_dimensions((200, 800))
         
-        self.elems["logitemtest1"] = UIButton(
-            relative_rect=pygame.Rect((10, 20), (250, 30)),
-            text='Activity Log Item 1',
-            container = self.elems["log"]
-        )
-        self.elems["logitemtest2"] = UIButton(
-            relative_rect=pygame.Rect((10, 500), (250, 30)),
-            text='Activity Log Item 2',
-            container = self.elems["log"]
-        )
+    def draw_logs(self, log):
+        i = 0
+        for time, desc in reversed(log):
+            self.elems[f'logitem{i}'] = UIButton(
+                relative_rect=pygame.Rect((10, 20 + (i* 30)), (250, 30)),
+                text=desc,
+                container = self.elems["log"]
+            )
+            i += 1
 
 class RoomsScreen(Screen):
     def create(self):
