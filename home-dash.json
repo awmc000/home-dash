@@ -37,6 +37,21 @@
             "border_width": "2"
         }
     },
+    "@quickdevice":
+    {
+        "colours":
+        {
+            "normal_border": "Black",
+            "normal_bg": "White",
+            "normal_text": "Black"
+        },
+        "misc":
+        {
+            "shape": "rounded_rectangle",
+            "shape_corner_radius": "10",
+            "border_width": "2"
+        }
+    },
     "@navbar_button":
     {
         "colours":
@@ -52,35 +67,8 @@
             "border_width": "2"
         }
     },
-    "@quick":
+    "#homebutton":
     {
-        "colours":
-        {
-            "normal_border": "Black",
-            "normal_bg": "White",
-            "normal_text": "Black"
-        },
-        "misc":
-        {
-            "shape": "rounded_rectangle",
-            "shape_corner_radius": "10",
-            "border_width": "2"
-        }
-    },
-    "@homebutton":
-    {
-        "colours":
-        {
-            "normal_border": "Black",
-            "normal_bg": "White",
-            "normal_text": "Black"
-        },
-        "misc":
-        {
-            "shape": "rounded_rectangle",
-            "shape_corner_radius": "10",
-            "border_width": "2"
-        },
         "images":
         {
             "normal_image": {
@@ -88,20 +76,8 @@
             }
         }
     },
-    "@roomsbutton":
+    "#roomsbutton":
     {
-        "colours":
-        {
-            "normal_border": "Black",
-            "normal_bg": "White",
-            "normal_text": "Black"
-        },
-        "misc":
-        {
-            "shape": "rounded_rectangle",
-            "shape_corner_radius": "10",
-            "border_width": "2"
-        },
         "images":
         {
             "normal_image": {
@@ -109,20 +85,8 @@
             }
         }
     },
-    "@activitybutton":
+    "#activitybutton":
     {
-        "colours":
-        {
-            "normal_border": "Black",
-            "normal_bg": "White",
-            "normal_text": "Black"
-        },
-        "misc":
-        {
-            "shape": "rounded_rectangle",
-            "shape_corner_radius": "10",
-            "border_width": "2"
-        },
         "images":
         {
             "normal_image": {

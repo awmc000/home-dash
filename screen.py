@@ -51,19 +51,19 @@ class Screen(object):
             relative_rect=pygame.Rect((navbar_x + nav_spacing, navbar_y), (nav_button_width, nav_button_height)),
             text='Home',
             manager=self.manager,
-            object_id = ObjectID(class_id='@homebutton')
+            object_id = ObjectID(class_id='@navbar_button', object_id='#homebutton')
         )
         self.elems["rooms"] = UIButton(
             relative_rect=pygame.Rect((navbar_x + nav_spacing + 1 * (nav_button_width), navbar_y), (nav_button_width, nav_button_height)),
             text='Rooms',
             manager=self.manager,
-            object_id = ObjectID(class_id='@roomsbutton')
+            object_id = ObjectID(class_id='@navbar_button', object_id='#roomsbutton')
         )
         self.elems["activity"] = UIButton(
             relative_rect=pygame.Rect((navbar_x + nav_spacing + 2 * (nav_button_width), navbar_y), (nav_button_width, nav_button_height)),
             text='Activity',
             manager=self.manager,
-            object_id = ObjectID(class_id='@activitybutton')
+            object_id = ObjectID(class_id='@navbar_button', object_id='#activitybutton')
         )
         self.elems["addnew"] = UIButton(
             relative_rect=pygame.Rect((navbar_x + nav_spacing + 3 * (nav_button_width), navbar_y), (nav_button_width, nav_button_height)),
@@ -84,6 +84,13 @@ class HomeScreen(Screen):
             text='Welcome'
         )
 
+        self.elems["viewroomsbutton"] = UIButton(
+            relative_rect=pygame.Rect((50, 80), (200, 50)),
+            text='View Rooms',
+            manager=self.manager,
+            object_id = ObjectID(class_id='@turnoffall_button')
+        )
+
         # Quick access section
         self.elems["quickaccess"] = UILabel(
             relative_rect=pygame.Rect((20, 120), (100, 50)),
@@ -95,21 +102,21 @@ class HomeScreen(Screen):
             relative_rect=pygame.Rect((20, 170), (quick_button_length, quick_button_length)),
             text='quick1',
             manager=self.manager,
-            object_id = ObjectID(class_id='@quick')
+            object_id = ObjectID(class_id='@quickdevice')
         )
         
         self.elems["quick2"] = UIButton(
             relative_rect=pygame.Rect((100, 170), (quick_button_length, quick_button_length)),
             text='quick2',
             manager=self.manager,
-            object_id = ObjectID(class_id='@quick')
+            object_id = ObjectID(class_id='@quickdevice')
         )
 
         self.elems["quick3"] = UIButton(
             relative_rect=pygame.Rect((180, 170), (quick_button_length, quick_button_length)),
             text='quick3',
             manager=self.manager,
-            object_id = ObjectID(class_id='@quick')
+            object_id = ObjectID(class_id='@quickdevice')
         )
         
         # Recent activity section
@@ -122,7 +129,7 @@ class HomeScreen(Screen):
             relative_rect=pygame.Rect((200, 250), (quick_button_length, 40)),
             text='See All',
             manager=self.manager,
-            object_id = ObjectID(class_id='@quick')
+            object_id = ObjectID(class_id='@quickdevice')
         )
         # Master switch section
         self.elems["masterswitch"] = UILabel(
