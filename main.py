@@ -57,8 +57,11 @@ class Floor(object):
     '''
     def __init__(self, name):
         self.name = name
-        self.rooms = [Room('Untitled Room 0'), Room('Untitled Room 1')]
-        self.adjacency = [[1], [0]]
+        self.rooms = [Room('Room 0'), Room('Room 1'), Room('Room 2')]
+        self.grid = [
+            [0, 1],
+            [None, 2]
+        ]
 
 class House(object):
     '''
@@ -67,6 +70,9 @@ class House(object):
     '''
     def __init__(self):
         self.floors = [Floor('Ground Floor')]
+        
+        # Selected floor starts on ground floor
+        self.selected_floor = self.floors[0]
         
         # Create activity log with startup event
         self.log = [(datetime.now(), 'Application started')]
@@ -95,7 +101,7 @@ class DashDemo(object):
         "addnew":       1,
         "adddevice":    2,
         "addroom":      3,
-        "rooms":    4,
+        "rooms":        4,
         "viewdevice":   5,
         "activity":     6
     }
@@ -119,23 +125,68 @@ class DashDemo(object):
 
         self.mainLoop()
     
+    def draw_floor(self):
+        '''
+        It's not pretty but it'll have to do. 这个太脏了！！！
+        
+        Because drawing the rectangles is pygame and not pygame_gui,
+        we're going to do it here in the DashDemo class and then tell
+        the RoomsScreen class to write the labels... and see how that works.
+        
+        '''
+        grid = self.house.selected_floor.grid
+                
+        startPos = (20, 100)
+        roomSize = (75, 75)
+        margin = 2
+        
+        roomInfo = {}
+        
+        for r, row in enumerate(grid):
+            for c, col in enumerate(grid[r]):
+                if col is not None:
+                    # Compute the position of the room to place the label
+                    roomPos = (
+                        20 + c*(roomSize[0]+margin), 
+                        100 + r*(roomSize[1]+margin)
+                    )
+                    # Pack up the room index, name, x, y for sending to RoomsScreen
+                    roomInfo[col] = (self.house.selected_floor.rooms[col].name, r, c)
+                    pygame.draw.rect(
+                        self.bg,
+                        "black",
+                        pygame.Rect(roomPos, roomSize), 
+                        width=2
+                    )
+        
+        self.screen.label_rooms(roomInfo)
+    
+    def clear(self):
+        # Destroy elements drawn with pygame_gui
+        self.manager.clear_and_reset()
+        
+        # Draw elements drawn with just pygame (room squares, mostly)
+        self.bg.fill(pygame.Color('#FFFFFF'))
+    
     def handle_common_elements(self, event):
         if event.ui_element == self.screen.elems['home']:
             self.state = self.states['home']
-            self.manager.clear_and_reset()
+            self.clear()
             self.screen = HomeScreen(self.manager)
         elif event.ui_element == self.screen.elems['rooms']:
             self.state = self.states['rooms']
             self.manager.clear_and_reset()
+            self.clear()
             self.screen = RoomsScreen(self.manager)
+            self.draw_floor()
         elif event.ui_element == self.screen.elems['activity']:
             self.state = self.states['activity']
-            self.manager.clear_and_reset()
+            self.clear()
             self.screen = ActivityScreen(self.manager)
             self.screen.draw_logs(self.house.log)
         elif event.ui_element == self.screen.elems['addnew']:
             self.state = self.states['addnew']
-            self.manager.clear_and_reset()
+            self.clear()
             self.screen = AddNewScreen(self.manager)
 
     def mainLoop(self):

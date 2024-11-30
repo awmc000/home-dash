@@ -17,6 +17,7 @@ Split off Nov 24
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
+from pygame_gui.core.drawable_shapes import RectDrawableShape
 from pygame_gui.elements import UIButton, UILabel, UIScrollingContainer
 
 from time import strftime, gmtime
@@ -190,7 +191,24 @@ class ActivityScreen(Screen):
 
 class RoomsScreen(Screen):
     def create(self):
-        self.elems["masterswitch"] = UILabel(
-            relative_rect=pygame.Rect((50, 350), (150, 50)),
-            text='TODO: Rooms'
+        self.elems["roomtitle"] = UILabel(
+            relative_rect=pygame.Rect((100, 20), (100, 50)),
+            text='Ground Floor'
         )
+
+    def update(self):
+        self.elems["roomtitle"].text = 'Ground Floor'
+    
+    def label_rooms(self, roomInfo):
+        startPos = (20, 100)
+        roomSize = (75, 75)
+        margin = 2
+        
+        for roomi, v in roomInfo.items():
+            name, gx, gy = v
+            x = startPos[0] + gy*(roomSize[0]+margin)
+            y = startPos[1] + gx*(roomSize[1]+margin)
+            self.elems[f"roomlabel{roomi}"] = UILabel(
+                relative_rect=pygame.Rect((x, y), roomSize),
+                text=name
+            )
