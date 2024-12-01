@@ -193,6 +193,25 @@ class DashDemo(object):
         self.screen = RoomScreen(self.manager)
         self.screen.update(self.house.selected_floor.rooms[id])
 
+    def handle_floor_buttons(self, event):
+        '''
+        Handle buttons to go to prev/next floor on view rooms screen.
+        '''
+        nFloors = len(self.house.floors)
+        i = self.house.floors.index(self.house.selected_floor)
+        
+        print(i)
+        
+        if event.ui_element == self.screen.elems['prevfloor']:
+            if i > 0 and nFloors > 1:
+                i -= 1
+        elif event.ui_element == self.screen.elems['nextfloor']:
+            if i < nFloors - 1:
+                i += 1
+        
+        self.house.selected_floor = self.house.floors[i]
+        self.go_rooms(event)
+
     def go_home(self, event):
         self.state = self.states['home']
         self.clear()
@@ -203,6 +222,7 @@ class DashDemo(object):
         self.manager.clear_and_reset()
         self.clear()
         self.screen = RoomsScreen(self.manager)
+        self.screen.update(self.house.selected_floor)
         self.draw_floor()
 
     def go_activity(self, event):
@@ -233,6 +253,7 @@ class DashDemo(object):
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    print(f'self.screen.elems at shutdown:{self.screen.elems}')
                     self.running = False
 
                 if event.type == pygame_gui.UI_BUTTON_PRESSED:
@@ -244,9 +265,18 @@ class DashDemo(object):
                             self.house.turn_off_all()
                         elif event.ui_element == self.screen.elems['viewall']:
                             self.go_activity(event)
+                        elif event.ui_element == self.screen.elems['viewroomsbutton']:
+                            self.go_rooms(event)
                     
                     if self.state == self.states['rooms']:
+                        print(f'Handling rooms buttons. State is {self.state}')
                         self.handle_room_buttons(event)
+                        
+                        # Check if state changed after this handler function.
+                        if self.state != self.states['rooms']:
+                            break
+                        
+                        self.handle_floor_buttons(event)
                     
                     if self.state == self.states['room']:
                         if event.ui_element == self.screen.elems['backbutton']:

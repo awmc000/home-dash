@@ -165,6 +165,7 @@ class AddNewScreen(Screen):
             manager=self.manager,
             object_id = ObjectID(class_id='@turnoffall_button')
         )
+
 class ActivityScreen(Screen):
     def create(self):
         self.elems["activitylog"] = UILabel(
@@ -195,9 +196,20 @@ class RoomsScreen(Screen):
             relative_rect=pygame.Rect((100, 20), (100, 50)),
             text='Ground Floor'
         )
+        
+        self.elems["prevfloor"] = UIButton(
+            relative_rect=pygame.Rect((70, 50), (30, 30)),
+            text='<<'
+        )
 
-    def update(self):
-        self.elems["floortitle"].text = 'Ground Floor'
+        self.elems["nextfloor"] = UIButton(
+            relative_rect=pygame.Rect((200, 50), (30, 30)),
+            text='>>'
+        )
+
+    def update(self, floor):
+        self.elems["floortitle"].text = floor.name
+        print(f'Set floor title to {floor.name}.')
     
     def label_rooms(self, roomInfo):
         startPos = (20, 100)
@@ -221,12 +233,60 @@ class RoomScreen(Screen):
             manager=self.manager
             # object_id = ObjectID(class_id='@turnoffall_button')
         )
+        
+        self.elems["room"] = UIButton(
+            relative_rect=pygame.Rect((50, 100), (200, 200)),
+            text='',
+            manager=self.manager
+            # object_id = ObjectID(class_id='@turnoffall_button')
+        )
+        
+        self.elems["floortitle"] = UILabel(
+            relative_rect=pygame.Rect((50, 300), (100, 50)),
+            text='Device List'
+        )
     
     def update(self, room):
         '''
         room: Room object
         '''
+        self.room = room
         self.elems["roomtitle"] = UILabel(
             relative_rect=pygame.Rect((100, 20), (100, 50)),
             text=f'{room.name}'
+        )
+        
+        devices = self.room.devices
+        
+        
+        startingPos = (30, 350)
+        labelSize = (150, 30)
+        margin = 2
+        
+        iconStart = (50, 100)
+        iconSize = (35, 35)
+        
+        for i, device in enumerate(devices):
+            self.elems[f"devicelabel{i}"] = UIButton(
+                relative_rect=pygame.Rect(
+                    (startingPos[0] + i*(labelSize[0]+margin),
+                    (startingPos[1]+ i*(startingPos[1]+margin))),
+                    labelSize),
+                text=device.name
+            )
+            self.elems[f"deviceicon{i}"] = UIButton(
+                relative_rect=pygame.Rect(
+                    (iconStart[0] + i*(iconSize[0]+margin) + margin,
+                    (iconStart[1]+ i*(iconSize[1]+margin)) + margin),
+                    iconSize),
+                text=device.name[:2]
+            )
+
+class DeviceScreen(Screen):
+    def create(self):
+        self.elems["backbutton"] = UIButton(
+            relative_rect=pygame.Rect((20, 50), (80, 40)),
+            text='Back',
+            manager=self.manager
+            # object_id = ObjectID(class_id='@turnoffall_button')
         )
