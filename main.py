@@ -15,22 +15,11 @@ from datetime import datetime
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
-from pygame_gui.elements import UIButton, UILabel
 
 # Modules in this project
 from screen import *
+from device import *
 
-class Device(object):
-    '''
-    Stores device name, icon & on/off state.    
-    '''
-    def __init__(self, name, icon):
-        self.name = name
-        self.icon = icon # TODO: Path to an icon.
-        self.attributes = {'on': True}
-
-    def turn_off(self):
-        self.attributes['on'] = False
 
 # class Camera(Device):
 #     '''

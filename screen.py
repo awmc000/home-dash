@@ -17,7 +17,6 @@ Split off Nov 24
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
-from pygame_gui.core.drawable_shapes import RectDrawableShape
 from pygame_gui.elements import UIButton, UILabel, UIScrollingContainer
 
 from time import strftime, gmtime
@@ -300,6 +299,7 @@ class DeviceScreen(Screen):
         '''
         
         # Draw device attributes list
+        # TODO: This only supports one device right now
         for device in room.devices:
             startingPos = (30, 350)
             labelSize = (150, 30)
@@ -313,3 +313,10 @@ class DeviceScreen(Screen):
                         labelSize),
                     text=attribute
                 )
+        
+        # Draw device controls
+        # TODO: This only supports one control right now
+        modifier = device.get_modifier()
+        modifier.linkManager(self.manager)
+        for name, elem in modifier.uiElements.items():
+            elem.set_position((50, 400))
