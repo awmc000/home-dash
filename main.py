@@ -102,8 +102,9 @@ class DashDemo(object):
         "adddevice":    2,
         "addroom":      3,
         "rooms":        4,
-        "viewdevice":   5,
-        "activity":     6
+        "room":         5,
+        "viewdevice":   6,
+        "activity":     7
     }
     screenDimensions = (300, 600)
 
@@ -133,6 +134,9 @@ class DashDemo(object):
         we're going to do it here in the DashDemo class and then tell
         the RoomsScreen class to write the labels... and see how that works.
         
+        EDIT: Actually removed the drawing logic and just made the labels
+        into buttons and this is probably going to work.
+        
         '''
         grid = self.house.selected_floor.grid
                 
@@ -152,12 +156,12 @@ class DashDemo(object):
                     )
                     # Pack up the room index, name, x, y for sending to RoomsScreen
                     roomInfo[col] = (self.house.selected_floor.rooms[col].name, r, c)
-                    pygame.draw.rect(
-                        self.bg,
-                        "black",
-                        pygame.Rect(roomPos, roomSize), 
-                        width=2
-                    )
+                    # pygame.draw.rect(
+                    #     self.bg,
+                    #     "black",
+                    #     pygame.Rect(roomPos, roomSize), 
+                    #     width=2
+                    # )
         
         self.screen.label_rooms(roomInfo)
     
@@ -168,26 +172,59 @@ class DashDemo(object):
         # Draw elements drawn with just pygame (room squares, mostly)
         self.bg.fill(pygame.Color('#FFFFFF'))
     
+    def handle_room_buttons(self, event):
+        '''
+        Handles opening a room on the view rooms screen.
+        '''
+        roomButtons = {v: k for k, v in self.screen.elems.items() if 'roombutton' in k}
+        
+        if event.ui_element not in roomButtons:
+            return
+        
+        id = int(
+            ''.join(
+                [c for c in roomButtons[event.ui_element] 
+                 if c.isdigit()]
+            )
+        )
+        
+        self.state = self.states['room']
+        self.clear()
+        self.screen = RoomScreen(self.manager)
+        self.screen.update(self.house.selected_floor.rooms[id])
+
+    def go_home(self, event):
+        self.state = self.states['home']
+        self.clear()
+        self.screen = HomeScreen(self.manager)
+
+    def go_rooms(self, event):
+        self.state = self.states['rooms']
+        self.manager.clear_and_reset()
+        self.clear()
+        self.screen = RoomsScreen(self.manager)
+        self.draw_floor()
+
+    def go_activity(self, event):
+        self.state = self.states['activity']
+        self.clear()
+        self.screen = ActivityScreen(self.manager)
+        self.screen.draw_logs(self.house.log)
+
+    def go_addnew(self, event):
+        self.state = self.states['addnew']
+        self.clear()
+        self.screen = AddNewScreen(self.manager)
+
     def handle_common_elements(self, event):
         if event.ui_element == self.screen.elems['home']:
-            self.state = self.states['home']
-            self.clear()
-            self.screen = HomeScreen(self.manager)
+            self.go_home(event)
         elif event.ui_element == self.screen.elems['rooms']:
-            self.state = self.states['rooms']
-            self.manager.clear_and_reset()
-            self.clear()
-            self.screen = RoomsScreen(self.manager)
-            self.draw_floor()
+            self.go_rooms(event)
         elif event.ui_element == self.screen.elems['activity']:
-            self.state = self.states['activity']
-            self.clear()
-            self.screen = ActivityScreen(self.manager)
-            self.screen.draw_logs(self.house.log)
+            self.go_activity(event)
         elif event.ui_element == self.screen.elems['addnew']:
-            self.state = self.states['addnew']
-            self.clear()
-            self.screen = AddNewScreen(self.manager)
+            self.go_addnew(event)
 
     def mainLoop(self):
         while self.running:
@@ -206,10 +243,14 @@ class DashDemo(object):
                         if event.ui_element == self.screen.elems['turnoffall']:
                             self.house.turn_off_all()
                         elif event.ui_element == self.screen.elems['viewall']:
-                            self.state = self.states['activity']
-                            self.manager.clear_and_reset()
-                            self.screen = ActivityScreen(self.manager)
-                            self.screen.draw_logs(self.house.log)
+                            self.go_activity(event)
+                    
+                    if self.state == self.states['rooms']:
+                        self.handle_room_buttons(event)
+                    
+                    if self.state == self.states['room']:
+                        if event.ui_element == self.screen.elems['backbutton']:
+                            self.go_rooms(event)
 
                 self.manager.process_events(event)
 

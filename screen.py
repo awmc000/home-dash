@@ -191,13 +191,13 @@ class ActivityScreen(Screen):
 
 class RoomsScreen(Screen):
     def create(self):
-        self.elems["roomtitle"] = UILabel(
+        self.elems["floortitle"] = UILabel(
             relative_rect=pygame.Rect((100, 20), (100, 50)),
             text='Ground Floor'
         )
 
     def update(self):
-        self.elems["roomtitle"].text = 'Ground Floor'
+        self.elems["floortitle"].text = 'Ground Floor'
     
     def label_rooms(self, roomInfo):
         startPos = (20, 100)
@@ -208,7 +208,25 @@ class RoomsScreen(Screen):
             name, gx, gy = v
             x = startPos[0] + gy*(roomSize[0]+margin)
             y = startPos[1] + gx*(roomSize[1]+margin)
-            self.elems[f"roomlabel{roomi}"] = UILabel(
+            self.elems[f"roombutton{roomi}"] = UIButton(
                 relative_rect=pygame.Rect((x, y), roomSize),
                 text=name
             )
+
+class RoomScreen(Screen):
+    def create(self):
+        self.elems["backbutton"] = UIButton(
+            relative_rect=pygame.Rect((20, 50), (80, 40)),
+            text='Back',
+            manager=self.manager
+            # object_id = ObjectID(class_id='@turnoffall_button')
+        )
+    
+    def update(self, room):
+        '''
+        room: Room object
+        '''
+        self.elems["roomtitle"] = UILabel(
+            relative_rect=pygame.Rect((100, 20), (100, 50)),
+            text=f'{room.name}'
+        )
