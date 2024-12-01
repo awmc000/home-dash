@@ -318,5 +318,6 @@ class DeviceScreen(Screen):
         # TODO: This only supports one control right now
         modifier = device.get_modifier()
         modifier.linkManager(self.manager)
+        
         for name, elem in modifier.uiElements.items():
             elem.set_position((50, 400))
