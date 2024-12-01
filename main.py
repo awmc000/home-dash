@@ -26,8 +26,11 @@ class Device(object):
     '''
     def __init__(self, name, icon):
         self.name = name
-        self.on = True
         self.icon = icon # TODO: Path to an icon.
+        self.attributes = {'on': True}
+
+    def turn_off(self):
+        self.attributes['on'] = False
 
 # class Camera(Device):
 #     '''
@@ -69,10 +72,13 @@ class House(object):
     By default, a house has one floor and one room.
     '''
     def __init__(self):
-        self.floors = [Floor('Ground Floor')]
+        self.floors = [Floor('Ground Floor'), Floor('First Floor')]
         
         # Selected floor starts on ground floor
         self.selected_floor = self.floors[0]
+        
+        # Selected room will be room 0 on ground floor
+        self.selected_room = self.selected_floor.rooms[0]
         
         # Create activity log with startup event
         self.log = [(datetime.now(), 'Application started')]
@@ -87,7 +93,7 @@ class House(object):
         for floor in self.floors:
             for room in floor.rooms:
                 for device in room.devices:
-                    device.on = False
+                    device.turn_off()
                     self.log_event(f'Turned off {device.name} in {room.name}')
 
 
@@ -188,10 +194,8 @@ class DashDemo(object):
             )
         )
         
-        self.state = self.states['room']
-        self.clear()
-        self.screen = RoomScreen(self.manager)
-        self.screen.update(self.house.selected_floor.rooms[id])
+        self.house.selected_room = self.house.selected_floor.rooms[id]
+        self.go_room(event, id)
 
     def handle_floor_buttons(self, event):
         '''
@@ -212,6 +216,25 @@ class DashDemo(object):
         self.house.selected_floor = self.house.floors[i]
         self.go_rooms(event)
 
+    def handle_device_buttons(self, event):
+        '''
+        Handle buttons to inspect a device.
+        '''
+        deviceButtons = {v:k for k,v in self.screen.elems.items() if 'device' in k}
+        
+        if event.ui_element not in deviceButtons:
+            return
+        
+        id = int(
+            ''.join(
+                [c for c in deviceButtons[event.ui_element] 
+                 if c.isdigit()]
+            )
+        )
+        
+        print(f'{id}, {deviceButtons}')
+        self.go_device(event)
+
     def go_home(self, event):
         self.state = self.states['home']
         self.clear()
@@ -224,6 +247,18 @@ class DashDemo(object):
         self.screen = RoomsScreen(self.manager)
         self.screen.update(self.house.selected_floor)
         self.draw_floor()
+        
+    def go_room(self, event, id):
+        self.state = self.states['room']
+        self.clear()
+        self.screen = RoomScreen(self.manager)
+        self.screen.update(self.house.selected_floor.rooms[id])
+
+    def go_device(self, event):
+        self.state = self.states['viewdevice']
+        self.clear()
+        self.screen = DeviceScreen(self.manager)
+        self.screen.update(self.house.selected_room)
 
     def go_activity(self, event):
         self.state = self.states['activity']
@@ -281,6 +316,7 @@ class DashDemo(object):
                     if self.state == self.states['room']:
                         if event.ui_element == self.screen.elems['backbutton']:
                             self.go_rooms(event)
+                        self.handle_device_buttons(event)
 
                 self.manager.process_events(event)
 

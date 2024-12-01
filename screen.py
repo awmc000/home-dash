@@ -208,7 +208,7 @@ class RoomsScreen(Screen):
         )
 
     def update(self, floor):
-        self.elems["floortitle"].text = floor.name
+        self.elems["floortitle"].set_text(floor.name)
         print(f'Set floor title to {floor.name}.')
     
     def label_rooms(self, roomInfo):
@@ -258,7 +258,6 @@ class RoomScreen(Screen):
         
         devices = self.room.devices
         
-        
         startingPos = (30, 350)
         labelSize = (150, 30)
         margin = 2
@@ -290,3 +289,27 @@ class DeviceScreen(Screen):
             manager=self.manager
             # object_id = ObjectID(class_id='@turnoffall_button')
         )
+        self.elems["attributelist"] = UILabel(
+            relative_rect=pygame.Rect((50, 300), (100, 50)),
+            text='Attribute List'
+        )
+        
+    def update(self, room):
+        '''
+        Room object
+        '''
+        
+        # Draw device attributes list
+        for device in room.devices:
+            startingPos = (30, 350)
+            labelSize = (150, 30)
+            margin = 2
+        
+            for i, attribute in enumerate(device.attributes):
+                self.elems[f"attrlabel{i}"] = UIButton(
+                    relative_rect=pygame.Rect(
+                        (startingPos[0] + i*(labelSize[0]+margin),
+                        (startingPos[1]+ i*(startingPos[1]+margin))),
+                        labelSize),
+                    text=attribute
+                )
