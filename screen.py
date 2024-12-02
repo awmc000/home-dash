@@ -295,24 +295,30 @@ class DeviceScreen(Screen):
         
     def update(self, room):
         '''
-        Room object
+        room: Room object. Should only ever be DashDemo.house.selected_room
+        
+        For all devices in the room:
+            - Draws an icon and a label.
+            - Get modifier, use it to draws controls and attribute labels
+                - Add all those controls to elems for handling.
         '''
         
         # Draw device attributes list
         # TODO: This only supports one device right now
-        for device in room.devices:
-            startingPos = (30, 350)
-            labelSize = (150, 30)
-            margin = 2
+        device = room.devices[0]
+        # for device in room.devices:
+        #     startingPos = (30, 350)
+        #     labelSize = (150, 30)
+        #     margin = 2
         
-            for i, attribute in enumerate(device.attributes):
-                self.elems[f"attrlabel{i}"] = UIButton(
-                    relative_rect=pygame.Rect(
-                        (startingPos[0] + i*(labelSize[0]+margin),
-                        (startingPos[1]+ i*(startingPos[1]+margin))),
-                        labelSize),
-                    text=attribute
-                )
+        #     for i, attribute in enumerate(device.attributes):
+        #         self.elems[f"attrlabel{i}"] = UIButton(
+        #             relative_rect=pygame.Rect(
+        #                 (startingPos[0] + i*(labelSize[0]+margin),
+        #                 (startingPos[1]+ i*(startingPos[1]+margin))),
+        #                 labelSize),
+        #             text=attribute
+        #         )
         
         # Draw device controls
         # TODO: This only supports one control right now
@@ -320,4 +326,5 @@ class DeviceScreen(Screen):
         modifier.linkManager(self.manager)
         
         for name, elem in modifier.uiElements.items():
+            self.elems[device.name + '.' + name] = elem
             elem.set_position((50, 400))

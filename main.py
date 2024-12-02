@@ -224,6 +224,11 @@ class DashDemo(object):
         print(f'{id}, {deviceButtons}')
         self.go_device(event)
 
+    def handle_device_controls(self, event):
+        '''
+        Handles controls for different devices eg power buttons
+        '''
+
     def go_home(self, event):
         self.state = self.states['home']
         self.clear()
@@ -306,6 +311,9 @@ class DashDemo(object):
                         if event.ui_element == self.screen.elems['backbutton']:
                             self.go_rooms(event)
                         self.handle_device_buttons(event)
+
+                    if self.state == self.states['viewdevice']:
+                        self.handle_device_controls(event)
 
                 self.manager.process_events(event)
 
