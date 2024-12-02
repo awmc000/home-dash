@@ -228,6 +228,25 @@ class DashDemo(object):
         '''
         Handles controls for different devices eg power buttons
         '''
+        elementNames = {v: k for k,v in self.screen.elems.items() }
+        print(elementNames)
+
+        if event.ui_element not in elementNames:
+            return
+
+        print(f'found control: {elementNames[event.ui_element]}')
+
+        controlName = elementNames[event.ui_element]
+
+        deviceId = int(''.join([c for c in controlName if c.isdigit()]))
+        
+        print(f'id:{deviceId}')
+        
+        modifier = self.house.selected_room.devices[deviceId].get_modifier()
+        modifier.linkManager(self.manager)
+        modifier.handle(event)
+        print('handled')
+        self.screen.update_labels(self.house.selected_room)
 
     def go_home(self, event):
         self.state = self.states['home']

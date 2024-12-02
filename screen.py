@@ -305,20 +305,20 @@ class DeviceScreen(Screen):
         
         # Draw device attributes list
         # TODO: This only supports one device right now
-        device = room.devices[0]
-        # for device in room.devices:
-        #     startingPos = (30, 350)
-        #     labelSize = (150, 30)
-        #     margin = 2
+        id = 0
+        for device in room.devices:
+            startingPos = (30, 350)
+            labelSize = (150, 30)
+            margin = 2
         
-        #     for i, attribute in enumerate(device.attributes):
-        #         self.elems[f"attrlabel{i}"] = UIButton(
-        #             relative_rect=pygame.Rect(
-        #                 (startingPos[0] + i*(labelSize[0]+margin),
-        #                 (startingPos[1]+ i*(startingPos[1]+margin))),
-        #                 labelSize),
-        #             text=attribute
-        #         )
+            for i, attribute in enumerate(device.attributes):
+                self.elems[f"attrlabel{i}"] = UILabel(
+                    relative_rect=pygame.Rect(
+                        (startingPos[0] + i*(labelSize[0]+margin),
+                        (startingPos[1]+ i*(startingPos[1]+margin))),
+                        labelSize),
+                    text=attribute
+                )
         
         # Draw device controls
         # TODO: This only supports one control right now
@@ -326,5 +326,12 @@ class DeviceScreen(Screen):
         modifier.linkManager(self.manager)
         
         for name, elem in modifier.uiElements.items():
-            self.elems[device.name + '.' + name] = elem
+            self.elems['dev' + str(id) + '.' + name] = elem
             elem.set_position((50, 400))
+            
+    def update_labels(self, room):
+        id = 0
+        device = room.devices[0]
+        
+        for i, attribute in enumerate(device.attributes):
+            self.elems[f'attrlabel{i}'].set_text(attribute)
