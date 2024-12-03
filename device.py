@@ -51,10 +51,10 @@ class DeviceModifier(object):
             elem.rebuild()
             
     def handle(self, event):
-        print(f'{event.ui_element} == {self.uiElements['power']}')
+        print(f'{event.ui_element} == {self.uiElements["power"]}')
         if event.ui_element == self.uiElements['power']:
             self.device.attributes['on'] = not self.device.attributes['on']
-            print(f'device power now:{self.device.attributes['on']} ')
+            print(f'device power now:{self.device.attributes["on"]} ')
         else:
             # TODO: This is glitched, the power button doesn't match the power button.
             print('Not a match for power')
