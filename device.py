@@ -68,6 +68,12 @@ class Device(object):
         self.icon = icon # TODO: Path to an icon.
         self.attributes = {'on': True}
 
+    def toggle_power(self):
+        if self.attributes['on']:
+            self.attributes['on'] = False
+        else:
+            self.attributes['on'] = True
+
     def turn_off(self):
         self.attributes['on'] = False
     

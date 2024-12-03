@@ -244,15 +244,14 @@ class DashDemo(object):
         # TODO: STUPID HACK!!
         if '.' not in controlName:
             return
-
-        deviceId = int(''.join([c for c in controlName if c.isdigit()]))
         
-        print(f'id:{deviceId}')
+        device, attr = controlName.split('.')
         
-        modifier = self.house.selected_room.devices[deviceId].get_modifier()
-        modifier.linkManager(self.manager)
-        modifier.handle(event)
-        print('handled')
+        devNum = int(''.join([c for c in device if c.isdigit()]))
+        
+        if attr == 'power':
+            self.house.selected_room.devices[devNum].toggle_power()
+        
         self.screen.update_labels(self.house.selected_room)
 
     def set_state(self, state: str):

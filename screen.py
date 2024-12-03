@@ -335,7 +335,7 @@ class DeviceScreen(Screen):
                         (startingPos[0] + i*(labelSize[0]+margin),
                         (startingPos[1]+ i*(startingPos[1]+margin))),
                         labelSize),
-                    text=attribute
+                    text=str(device.attributes[attribute])
                 )
         
         # Draw device controls
@@ -352,4 +352,5 @@ class DeviceScreen(Screen):
         device = room.devices[0]
         
         for i, attribute in enumerate(device.attributes):
-            self.elems[f'attrlabel{i}'].set_text(attribute)
+            self.elems[f'attrlabel{i}'].set_text(str(device.attributes[attribute]))
+            print(f'modified text on attrlabel{i}')
