@@ -323,34 +323,46 @@ class DeviceScreen(Screen):
         
         # Draw device attributes list
         # TODO: This only supports one device right now
-        id = 0
-        for device in room.devices:
-            startingPos = (30, 350)
-            labelSize = (150, 30)
-            margin = 2
+        startingPos = (150, 340)
+        labelSize = (150, 50)
+        margin = 2
+        
+        for id, device in enumerate(room.devices):
         
             for i, attribute in enumerate(device.attributes):
-                self.elems[f"attrlabel{i}"] = UILabel(
+                self.elems[f"label{device.name}-{i}"] = UILabel(
                     relative_rect=pygame.Rect(
-                        (startingPos[0] + i*(labelSize[0]+margin),
-                        (startingPos[1]+ i*(startingPos[1]+margin))),
+                        (startingPos[0] + (id + i)*(labelSize[0]+margin),
+                        (startingPos[1]+ (id + i)*(startingPos[1]+margin))),
                         labelSize),
-                    text=str(device.attributes[attribute])
+                    text=self.attr_text(device.attributes[attribute])
                 )
-        
-        # Draw device controls
-        # TODO: This only supports one control right now
-        modifier = device.get_modifier()
-        modifier.linkManager(self.manager)
-        
-        for name, elem in modifier.uiElements.items():
-            self.elems['dev' + str(id) + '.' + name] = elem
-            elem.set_position((50, 400))
+ 
+            # Draw device controls
+            # TODO: This only supports one control right now
+            modifier = device.get_modifier()
+            modifier.linkManager(self.manager)
+            print(f'linked {device.name}')
+            i=0
             
+            for name, elem in modifier.uiElements.items():
+                print('set up ' + 'dev' + str(id) + '.' + name)
+                self.elems['dev' + str(id) + '.' + name] = elem
+                elem.set_position((50, 350 + i*(50)))
+                i += 1
+    
+    def attr_text(self, attr):
+        if isinstance(attr, bool):
+            if attr:
+                return 'on'
+            else:
+                return 'off'
+        else:
+            return str(attr)
+    
     def update_labels(self, room):
-        id = 0
-        device = room.devices[0]
         
-        for i, attribute in enumerate(device.attributes):
-            self.elems[f'attrlabel{i}'].set_text(str(device.attributes[attribute]))
-            print(f'modified text on attrlabel{i}')
+        for id, device in enumerate(room.devices):
+            for i, attribute in enumerate(device.attributes):
+                self.elems[f'label{device.name}-{i}'].set_text(self.attr_text(device.attributes[attribute]))
+                print(f'modified text on label{device.name}-{i}')

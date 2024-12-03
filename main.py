@@ -73,7 +73,7 @@ class House(object):
         self.log = [(datetime.now(), 'Application started')]
 
         # Append a test device
-        self.floors[0].rooms[0].devices.append(Device('TestDevice', ''))
+        self.floors[0].rooms[0].devices.append(Light('TestDevice', ''))
     
     def log_event(self, desc: str):
         self.log.append((datetime.now(), desc))
@@ -232,6 +232,7 @@ class DashDemo(object):
         print(elementNames)
 
         if event.ui_element not in elementNames:
+            print('not in elem names')
             return
 
         print(f'found control: {elementNames[event.ui_element]}')
@@ -251,6 +252,10 @@ class DashDemo(object):
         
         if attr == 'power':
             self.house.selected_room.devices[devNum].toggle_power()
+        elif attr == 'intensity':
+            print('intensity changed')
+            self.house.selected_room.devices[devNum].attributes['intensity'] = event.ui_element.get_current_value()
+            print(f'set to {event.ui_element.get_current_value()}')
         
         self.screen.update_labels(self.house.selected_room)
 

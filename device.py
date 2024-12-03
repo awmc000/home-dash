@@ -16,7 +16,7 @@ Split off December 1st, 2024
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
-from pygame_gui.elements import UIButton, UILabel
+from pygame_gui.elements import UIButton, UILabel, UIHorizontalSlider
 
 class DeviceModifier(object):
     '''
@@ -37,7 +37,7 @@ class DeviceModifier(object):
         
         # Construct a basic on/off switch which all devices have
         toggleSwitch = UIButton(
-            relative_rect=pygame.Rect((0, 0), (50, 20)),
+            relative_rect=pygame.Rect((0, 0), (75, 30)),
             text='ON/OFF',
             manager=None,
             object_id = ObjectID(class_id='@navbar_button')
@@ -46,7 +46,8 @@ class DeviceModifier(object):
     
     def linkManager(self, manager):
         self.manager = manager
-        for elem in self.uiElements.values():
+        for key, elem in self.uiElements.items():
+            print(f'linked {key}')
             elem.manager = manager
             elem.rebuild()
             
@@ -83,3 +84,29 @@ class Device(object):
         modifying this device.
         '''
         return DeviceModifier(self)
+
+class Light(Device):
+    '''
+    Dimmer switch. Has on/off state and percentage.
+    '''
+    def __init__(self, name, icon):
+        super().__init__(name, icon)
+        self.attributes['intensity'] = 100
+
+    def get_modifier(self):
+        '''
+        Returns an object that can be used to modify & get gui elements for 
+        modifying this device.
+        '''
+        return LightModifier(self)
+
+class LightModifier(DeviceModifier):
+    
+    def __init__(self, device):
+        super().__init__(device)
+        
+        self.uiElements['intensity'] = UIHorizontalSlider(
+            relative_rect=pygame.Rect((0, 0), (150, 30)),
+            start_value=0,
+            value_range=(0, 100),
+        )
