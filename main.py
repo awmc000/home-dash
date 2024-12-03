@@ -237,6 +237,13 @@ class DashDemo(object):
         print(f'found control: {elementNames[event.ui_element]}')
 
         controlName = elementNames[event.ui_element]
+        
+        # All control names have a dot . in them. 
+        # Nothing else does, so this distinguishes device controls from other
+        # gui elements.
+        # TODO: STUPID HACK!!
+        if '.' not in controlName:
+            return
 
         deviceId = int(''.join([c for c in controlName if c.isdigit()]))
         
@@ -248,40 +255,37 @@ class DashDemo(object):
         print('handled')
         self.screen.update_labels(self.house.selected_room)
 
-    def go_home(self, event):
-        self.state = self.states['home']
+    def set_state(self, state: str):
+        self.state = self.states[state]
         self.clear()
+
+    def go_home(self, event):
+        self.set_state('home')
         self.screen = HomeScreen(self.manager)
 
     def go_rooms(self, event):
-        self.state = self.states['rooms']
-        self.manager.clear_and_reset()
-        self.clear()
+        self.set_state('rooms')
         self.screen = RoomsScreen(self.manager)
         self.screen.update(self.house.selected_floor)
         self.draw_floor()
         
     def go_room(self, event, id):
-        self.state = self.states['room']
-        self.clear()
+        self.set_state('room')
         self.screen = RoomScreen(self.manager)
         self.screen.update(self.house.selected_floor.rooms[id])
 
     def go_device(self, event):
-        self.state = self.states['viewdevice']
-        self.clear()
+        self.set_state('viewdevice')
         self.screen = DeviceScreen(self.manager)
         self.screen.update(self.house.selected_room)
 
     def go_activity(self, event):
-        self.state = self.states['activity']
-        self.clear()
+        self.set_state('activity')
         self.screen = ActivityScreen(self.manager)
         self.screen.draw_logs(self.house.log)
 
     def go_addnew(self, event):
-        self.state = self.states['addnew']
-        self.clear()
+        self.set_state('addnew')
         self.screen = AddNewScreen(self.manager)
 
     def handle_common_elements(self, event):

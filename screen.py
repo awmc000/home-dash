@@ -165,6 +165,24 @@ class AddNewScreen(Screen):
             object_id = ObjectID(class_id='@turnoffall_button')
         )
 
+class NewRoom(Screen):
+    def create(self):
+        
+        # Welcome section
+        self.elems["newroom"] = UILabel(
+            relative_rect=pygame.Rect((100, 20), (100, 50)),
+            text='New Room'
+        )
+
+class NewDevice(Screen):
+    def create(self):
+        
+        # Welcome section
+        self.elems["newdevice"] = UILabel(
+            relative_rect=pygame.Rect((100, 20), (100, 50)),
+            text='New Device'
+        )
+
 class ActivityScreen(Screen):
     def create(self):
         self.elems["activitylog"] = UILabel(
